@@ -1,0 +1,20 @@
+---
+- name: Clear Observability Prom
+  hosts: localhost
+  connection: kubectl
+  gather_facts: false  
+  tasks:                                                                                                                                                                                                                                      
+    - name: Clear Observability Prom
+      k8s:
+        kind: ConfigMap
+        name: prometheus-config
+        namespace: monitoring
+        kubeconfig: /tmp/kb
+        definition:
+          apiVersion: v1
+          kind: ConfigMap
+          metadata:
+            name: prometheus-config
+            namespace: monitoring
+          data:
+            prometheus.rules: |

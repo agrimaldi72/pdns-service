@@ -1,0 +1,47 @@
+---
+- name: Set Observability Prom
+  hosts: localhost
+  connection: kubectl
+  gather_facts: false  
+  tasks:                                                                                                                                                                                                                                      
+    - name: Set Observability Prom
+      k8s:
+        kind: ConfigMap
+        name: prometheus-config
+        namespace: monitoring
+        kubeconfig: /tmp/kb
+        definition:
+          apiVersion: v1
+          kind: ConfigMap
+          metadata:
+            name: prometheus-config
+            namespace: monitoring
+          data:
+            prometheus.rules: |
+              groups:
+              - name: pdns recursor alert
+                rules:
+                - alert: High QPS
+                  expr: sum(rate(pdns_recursor_questions[1m])) / sum(kube_pod_container_info{container='pdns-resolver-helm',namespace='{{ k8snamespace }}' }) > {{ qpsHigh }}
+                  for: 30s
+                  labels:
+                    severity: medium
+                  annotations:
+                    summary: High QPS
+                    service: {{ system_properties.resourceName }}
+                - alert: Normal QPS
+                  expr: sum(rate(pdns_recursor_questions[1m])) / sum(kube_pod_container_info{container='pdns-resolver-helm',namespace='{{ k8snamespace }}' }) < {{ qpsNorm }}
+                  for: 30s
+                  labels:
+                    severity: nula
+                  annotations:
+                    summary: Normal QPS
+                    service: {{ system_properties.resourceName }}
+                - alert: High CPU
+                  expr: rate(container_cpu_usage_seconds_total{container='pdns-resolver-helm',namespace='{{ k8snamespace }}' }[1m]) > {{ cpuHigh }}
+                  for: 30s
+                  labels:
+                    severity: critical
+                  annotations:
+                    summary: High CPU
+                    service: {{ system_properties.resourceName }}

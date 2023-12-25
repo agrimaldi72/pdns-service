@@ -1,0 +1,42 @@
+description: descriptor for pdns-resolver
+properties:
+  deploymentLocation:
+    type: string
+  k8snamespace:
+    type: string
+infrastructure:
+  Kubernetes: {}
+lifecycle:
+  Create: {}
+  Install:
+    drivers:
+      kubernetes:
+        selector:
+          infrastructure-type:
+          - '*'
+  Configure:
+    drivers:
+      ansible:
+        selector:
+          infrastructure-type:
+          - '*'
+  Start:
+    drivers:
+      ansible:
+        selector:
+          infrastructure-type:
+          - '*'
+  # Integrity: {}
+  Stop: {}
+  # Uninstall: {}
+  Delete:
+    drivers:
+      kubernetes:
+        selector:
+          infrastructure-type:
+          - '*'
+default-driver:
+  kubernetes:
+    selector:
+      infrastructure-type:
+      - '*'

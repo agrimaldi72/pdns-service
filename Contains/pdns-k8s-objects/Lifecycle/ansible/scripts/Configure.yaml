@@ -1,0 +1,7 @@
+- name: Poner Pausa
+  hosts: localhost
+  gather_facts: False
+  tasks:
+    - name: Pause for 10 seconds
+      pause:
+        seconds: 10

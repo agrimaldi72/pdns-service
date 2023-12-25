@@ -1,0 +1,96 @@
+---
+# Source: pdns-resolver-helm/templates/serviceaccount.yaml
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: {{ k8snamespace }}
+---
+# Source: pdns-resolver-helm/templates/serviceaccount.yaml
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: pdns-resolver-pdns-resolver-helm
+  namespace: {{ k8snamespace }}
+  labels:
+    app.kubernetes.io/name: pdns-resolver-helm
+    app.kubernetes.io/instance: pdns-resolver
+---
+# Source: pdns-resolver-helm/templates/secret.yaml
+apiVersion: v1
+kind: Secret
+metadata:
+  name: pdns-resolver
+  namespace: {{ k8snamespace }}
+  labels:
+    app: pdns-resolver-pdns-resolver-helm
+type: Opaque
+data:
+  api-key: "Y2hhbmdlbWU="
+---
+# Source: pdns-resolver-helm/templates/configmap.yaml
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: pdns-resolver
+  namespace: {{ k8snamespace }}
+  labels:
+    app: pdns-resolver-pdns-resolver-helm
+data:
+  recursor.conf: |-
+    daemon=no
+    local-address=0.0.0.0
+    allow-from=0.0.0.0/0
+    forward-zones-recurse=.=1.1.1.1;8.8.8.8
+    webserver=yes
+    api-key=changeme
+    webserver-address=0.0.0.0
+    webserver-allow-from=0.0.0.0/0
+    loglevel=7
+    webserver-loglevel=detailed
+---
+# Source: pdns-resolver-helm/templates/service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: pdns-resolver-pdns-resolver-helm
+  namespace: {{ k8snamespace }}
+  labels:
+    app.kubernetes.io/name: pdns-resolver-helm
+    app.kubernetes.io/instance: pdns-resolver
+spec:
+  type: 
+  ports:
+    - port: 8082
+      targetPort: 8082
+      protocol: TCP
+      name: api
+    - port: 53
+      targetPort: 10053
+      protocol: TCP
+      name: dns-tcp
+    - port: 53
+      targetPort: 10053
+      protocol: UDP
+      name: dns-udp 
+  selector:
+    app.kubernetes.io/instance: pdns-resolver
+---
+# Source: pdns-resolver-helm/templates/service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: pdns-resolver
+  namespace: {{ k8snamespace }}
+  labels:
+    app.kubernetes.io/name: pdns-resolver-helm
+    app.kubernetes.io/instance: pdns-resolver
+spec:
+  type: NodePort
+  ports:
+    - name: dns-udp
+      protocol: UDP
+      port: 53
+      targetPort: 10053
+      nodePort: 31853
+  selector:
+    app.kubernetes.io/instance: pdns-resolver

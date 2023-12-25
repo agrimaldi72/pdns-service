@@ -1,0 +1,76 @@
+description: descriptor for pdns-service
+properties:
+  deploymentLocation:
+    default: k8s-lab
+    type: string
+  k8snamespace:
+    default: test-cp4na
+    type: string
+  numOfPdns:
+    type: integer
+    default: 1
+  cpuHigh:
+    type: float
+    default: 0.5
+  qpsHigh:
+    type: integer
+    default: 1500
+  qpsNorm:
+    type: integer
+    default: 1000
+  resourceManager:
+    value: brent
+    type: string
+composition:
+  pdns-k8s-objects:
+    properties:
+      deploymentLocation:
+        value: ${deploymentLocation}
+        type: string
+      k8snamespace:
+        value: ${k8snamespace}
+        type: string
+      resourceManager:
+        value: brent
+        type: string
+    type: $lmctl:/contains:/pdns-k8s-objects:/descriptor_name
+    quantity: 1
+  pdns-resolver:
+    properties:
+      deploymentLocation:
+        value: ${deploymentLocation}
+        type: string
+      k8snamespace:
+        value: ${k8snamespace}
+        type: string
+      resourceManager:
+        value: brent
+        type: string
+    type: $lmctl:/contains:/pdns-resolver:/descriptor_name
+    cluster:
+      initial-quantity: ${numOfPdns}
+      minimum-nodes: 1
+      maximum-nodes: 4
+      scaling-increment: 1
+  monitoring:
+    properties:
+      deploymentLocation:
+        value: ${deploymentLocation}
+        type: string
+      k8snamespace:
+        value: ${k8snamespace}
+        type: string
+      cpuHigh:
+        value: ${cpuHigh}
+        type: float
+      qpsHigh:
+        value: ${qpsHigh}
+        type: integer
+      qpsNorm:
+        value: ${qpsNorm}
+        type: integer
+      resourceManager:
+        value: brent
+        type: string
+    type: $lmctl:/contains:/monitoring:/descriptor_name
+    quantity: 1

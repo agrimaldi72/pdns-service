@@ -1,0 +1,12 @@
+---
+- name: Restart PoD
+  hosts: localhost
+  connection: kubectl
+  gather_facts: false  
+  tasks:
+    - name: Restart PoD
+      kubernetes.core.k8s_exec:
+        kubeconfig: /tmp/kb
+        pod: "{{ system_properties.resourceName | replace('__', '--') }}"
+        namespace: "{{ k8snamespace }}"
+        command: rec_control quit

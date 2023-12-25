@@ -1,0 +1,48 @@
+description: descriptor for monitoring
+properties:
+  deploymentLocation:
+    type: string
+  k8snamespace:
+    type: string
+  cpuHigh:
+    type: float
+  qpsHigh:
+    type: integer
+  qpsNorm:
+    type: integer
+infrastructure:
+  Kubernetes: {}
+lifecycle:
+  Create:
+    drivers:
+      ansible:
+        selector:
+          infrastructure-type:
+          - '*'
+  Install: {}
+  Configure: {}
+  Start:
+    drivers:
+      ansible:
+        selector:
+          infrastructure-type:
+          - '*'
+  # Integrity: {}
+  Stop:
+    drivers:
+      ansible:
+        selector:
+          infrastructure-type:
+          - '*'
+  # Uninstall: {}
+  Delete:
+    drivers:
+      ansible:
+        selector:
+          infrastructure-type:
+          - '*'
+default-driver:
+  kubernetes:
+    selector:
+      infrastructure-type:
+      - '*'

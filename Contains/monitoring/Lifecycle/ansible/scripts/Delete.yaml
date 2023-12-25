@@ -1,0 +1,53 @@
+---
+- name: Reload PROM Config
+  hosts: localhost
+  connection: kubectl
+  gather_facts: false  
+  tasks:
+    - name: Reset Prometheus
+      ansible.builtin.uri:
+        url: https://prometheus.apps.k8s.cablevision-labs.com.ar/-/reload
+        method: POST
+        status_code: [200, 201,500]
+        headers:
+          Accept: application/json
+    - name: Pause for 5 seconds
+      pause:
+        seconds: 10
+    - name: Reset Prometheus
+      ansible.builtin.uri:
+        url: https://prometheus.apps.k8s.cablevision-labs.com.ar/-/reload
+        method: POST
+        status_code: [200, 201,500]
+        headers:
+          Accept: application/json
+    - name: Pause for 5 seconds
+      pause:
+        seconds: 10
+    - name: Reset Prometheus
+      ansible.builtin.uri:
+        url: https://prometheus.apps.k8s.cablevision-labs.com.ar/-/reload
+        method: POST
+        status_code: [200, 201,500]
+        headers:
+          Accept: application/json
+    - name: Pause for 5 seconds
+      pause:
+        seconds: 10
+    - name: Reset Prometheus
+      ansible.builtin.uri:
+        url: https://prometheus.apps.k8s.cablevision-labs.com.ar/-/reload
+        method: POST
+        status_code: [200, 201,500]
+        headers:
+          Accept: application/json
+    - name: Pause for 5 seconds
+      pause:
+        seconds: 10
+    - name: Reset Prometheus
+      ansible.builtin.uri:
+        url: https://prometheus.apps.k8s.cablevision-labs.com.ar/-/reload
+        method: POST
+        status_code: [200, 201,500]
+        headers:
+          Accept: application/json

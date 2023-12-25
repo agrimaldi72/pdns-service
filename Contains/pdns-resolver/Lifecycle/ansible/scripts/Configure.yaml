@@ -1,0 +1,7 @@
+- name: Poner Pausa
+  hosts: localhost
+  gather_facts: False
+  tasks:
+    - name: Pause for 5 seconds
+      ansible.builtin.wait_for:
+        timeout: 5

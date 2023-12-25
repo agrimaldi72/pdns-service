@@ -1,0 +1,32 @@
+description: descriptor for pdns-k8s-objects
+properties:
+  deploymentLocation:
+    type: string
+  k8snamespace:
+    type: string
+infrastructure:
+  Kubernetes: {}
+lifecycle:
+  Create:
+    drivers:
+      kubernetes:
+        selector:
+          infrastructure-type:
+          - '*'
+  Install: {}
+  Configure: {}
+  Start: {}
+  # Integrity: {}
+  Stop: {}
+  # Uninstall: {}
+  Delete:
+    drivers:
+      kubernetes:
+        selector:
+          infrastructure-type:
+          - '*'
+default-driver:
+  kubernetes:
+    selector:
+      infrastructure-type:
+      - '*'

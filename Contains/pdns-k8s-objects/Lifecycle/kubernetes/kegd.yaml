@@ -1,0 +1,5 @@
+compose:
+  - name: Create
+    deploy:
+      - objects:
+          file: all_in_one.yaml

@@ -1,0 +1,5 @@
+compose:
+  - name: Install
+    deploy:
+      - objects:
+          file: pod.yaml

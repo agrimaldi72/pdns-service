@@ -1,0 +1,24 @@
+---
+- name: Stop scaling deployment down to 0
+  hosts: localhost
+  connection: kubectl
+  gather_facts: false
+  tasks:
+    - name: Read deployment infomation
+      kubernetes.core.k8s_info:
+        kubeconfig: /tmp/kb
+        api_version: v1
+        kind: Deployment
+        name: pdns-resolver-pdns-resolver-helm       
+        namespace: "{{ k8snamespace }}"
+      register: output_info
+      
+    - name: Stop scaling deployment down to 0
+      kubernetes.core.k8s_scale:
+        kubeconfig: /tmp/kb
+        api_version: v1
+        kind: Deployment
+        name: pdns-resolver-pdns-resolver-helm
+        namespace: "{{ k8snamespace }}"
+        replicas: "{{ output_info.resources[0].spec.replicas | int - 1 }}"
+        wait_timeout: 60

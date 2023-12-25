@@ -1,0 +1,73 @@
+kind: Pod
+apiVersion: v1
+metadata:
+  name: {{ system_properties.resourceName | replace("__", "--") }}
+  namespace: {{ k8snamespace }}
+  labels:
+    app.kubernetes.io/instance: pdns-resolver
+  annotations:
+    cp4na/resourceName: {{ system_properties.resourceName }}
+    cp4na/resourceType: {{ system_properties.resourceType }}
+spec:
+  volumes:
+    - name: config
+      configMap:
+        name: pdns-resolver
+        items:
+          - key: recursor.conf
+            path: recursor.conf
+        defaultMode: 420
+    - name: api-data
+      emptyDir: {}
+  containers:
+    - name: pdns-resolver-helm
+      image: 'powerdns/pdns-recursor-49:4.9.1'
+      command:
+        - /usr/local/sbin/pdns_recursor-startup
+      args:
+        - '--local-port=10053'
+      ports:
+        - name: api
+          containerPort: 8082
+          protocol: TCP
+        - name: dns-tcp
+          containerPort: 10053
+          protocol: TCP
+        - name: dns-udp
+          containerPort: 10053
+          protocol: UDP
+      env:
+        - name: PDNS_API_KEY
+          valueFrom:
+            secretKeyRef:
+              name: pdns-resolver
+              key: api-key
+      volumeMounts:
+        - name: config
+          mountPath: /etc/powerdns
+        - name: api-data
+          mountPath: /data
+      livenessProbe:
+        httpGet:
+          path: /api
+          port: api
+          scheme: HTTP
+          httpHeaders:
+            - name: X-API-Key
+              value: changeme
+        timeoutSeconds: 1
+        periodSeconds: 10
+        successThreshold: 1
+        failureThreshold: 3
+      readinessProbe:
+        httpGet:
+          path: /api
+          port: api
+          scheme: HTTP
+          httpHeaders:
+            - name: X-API-Key
+              value: changeme
+        timeoutSeconds: 1
+        periodSeconds: 10
+        successThreshold: 1
+        failureThreshold: 3

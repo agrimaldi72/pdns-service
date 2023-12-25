@@ -1,0 +1,18 @@
+schema: '2.0'
+name: pdns-service
+version: '2.0'
+packaging: tgz
+type: Assembly
+contains:
+- name: pdns-resolver
+  type: Resource
+  resource-manager: lm 
+  directory: pdns-resolver
+- name: pdns-k8s-objects
+  type: Resource
+  resource-manager: lm 
+  directory: pdns-k8s-objects
+- name: monitoring
+  type: Resource
+  resource-manager: lm 
+  directory: monitoring
