@@ -54,6 +54,8 @@ kind: Service
 metadata:
   name: pdns-resolver-pdns-resolver-helm
   namespace: {{ k8snamespace }}
+  annotations:
+    prometheus.io/scrape: 'true'
   labels:
     app.kubernetes.io/name: pdns-resolver-helm
     app.kubernetes.io/instance: pdns-resolver
